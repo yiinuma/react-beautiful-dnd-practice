@@ -16,7 +16,7 @@ function App() {
   const [state, setState] = useState(initialData);
 
   const onDragEnd = (result) => {
-    const { draggableId, source, destination } = result;
+    const { source, destination } = result;
 
     // destination: ドロップ先 がない場合には処理を終了
     if (!destination) {
@@ -34,8 +34,8 @@ function App() {
     if (start === finish) {
       // 開始時のカラムと終了時のカラムが同じであれば実行
       const newTasksIds = [...start.taskIds];
-      newTasksIds.splice(source.index, 1);
-      newTasksIds.splice(destination.index, 0, draggableId);
+      const [removed] = newTasksIds.splice(source.index, 1);
+      newTasksIds.splice(destination.index, 0, removed);
 
       const newColumn = {
         ...start,
@@ -51,20 +51,21 @@ function App() {
       };
 
       setState(newState);
-      console.log(newState);
+      console.log(newColumn, newState);
       return;
     }
 
     // 開始カラムと終了カラムが違う場合の処理
     const startTasksIds = [...start.taskIds]; // 開始時のカラムからタスクのidを取得
-    startTasksIds.splice(source.index, 1); // draggableなコンポーネントが元あった場所から1つ配列を削除する
+    const [add] = startTasksIds.splice(source.index, 1); // draggableなコンポーネントが元あった場所から1つ配列を削除する
+
     const newStart = {
       ...start, // 開始時のカラムをコピー
       taskIds: startTasksIds, // taskIdsの値をstartTaskIdsに置き換える
     };
 
     const finishTasksIds = [...finish.taskIds]; // 終了時のカラムからタスクのidを取得
-    finishTasksIds.splice(destination.index, 0, draggableId); // draggableなコンポーネントが置かれた場所にdraggableなコンポーネントを追加する
+    finishTasksIds.splice(destination.index, 0, add); // draggableなコンポーネントが置かれた場所にdraggableなコンポーネントを追加する
     const newFinish = {
       ...finish, // 終了時のカラムをコピー
       taskIds: finishTasksIds, // taskIdsの値をfinishTaskIdsに置き換える
