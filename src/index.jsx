@@ -33,12 +33,12 @@ function App() {
 
     if (start === finish) {
       // 開始時のカラムと終了時のカラムが同じであれば実行
-      const newTasksIds = Array.from(start.taskIds); // columnからstartに書き換え
+      const newTasksIds = [...start.taskIds];
       newTasksIds.splice(source.index, 1);
       newTasksIds.splice(destination.index, 0, draggableId);
 
       const newColumn = {
-        ...start, // columnからstartに書き換え
+        ...start,
         taskIds: newTasksIds,
       };
 
@@ -51,18 +51,19 @@ function App() {
       };
 
       setState(newState);
+      console.log(newState);
       return;
     }
 
-    // 開始カラムと終了カラムが違い場合の処理
-    const startTasksIds = Array.from(start.taskIds); // 開始時のカラムからタスクのidを取得
+    // 開始カラムと終了カラムが違う場合の処理
+    const startTasksIds = [...start.taskIds]; // 開始時のカラムからタスクのidを取得
     startTasksIds.splice(source.index, 1); // draggableなコンポーネントが元あった場所から1つ配列を削除する
     const newStart = {
       ...start, // 開始時のカラムをコピー
       taskIds: startTasksIds, // taskIdsの値をstartTaskIdsに置き換える
     };
 
-    const finishTasksIds = Array.from(finish.taskIds); // 終了時のカラムからタスクのidを取得
+    const finishTasksIds = [...finish.taskIds]; // 終了時のカラムからタスクのidを取得
     finishTasksIds.splice(destination.index, 0, draggableId); // draggableなコンポーネントが置かれた場所にdraggableなコンポーネントを追加する
     const newFinish = {
       ...finish, // 終了時のカラムをコピー
@@ -77,7 +78,6 @@ function App() {
         [newFinish.id]: newFinish, // finish時のid: {id: finish時のid, title: 'finish時のtitle', taskIds: 'finish時のids'}
       },
     };
-
     setState(newState); //stateの更新→再レンダリング
   };
 
